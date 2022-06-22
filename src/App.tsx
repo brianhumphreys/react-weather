@@ -1,26 +1,21 @@
 import React, { useEffect } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import {
-  mergeMap,
-  pluck,
-  tap,
-  iif,
-  of,
-  forkJoin,
-  throwError,
-  Observable,
-} from "rxjs";
+import { forkJoin, iif, tap, mergeMap, Observable, of, throwError } from "rxjs";
 import { ajax } from "rxjs/ajax";
+import {
+  getCurrentWeatherURL,
+  getGeoEncoderURL,
+  getThreeHourlyForcastURL,
+  getOneCallURL,
+} from "./api/urls";
+import "./App.css";
+import logo from "./logo.svg";
 
 function App() {
   useEffect(() => {
+    console.log("hellllllo");
     ajax
-      .getJSON<GeoResponse>(
-        "http://api.openweathermap.org/geo/1.0/direct?q=Houston,Texas&limit=5&appid=d8c40bb024e63504465377eae9f41697",
-      )
+      .getJSON<CityLatLon[]>(getGeoEncoderURL("houston"))
       .pipe(
-        pluck<GeoResponse, CityLatLon[]>("body"),
         mergeMap(
           (body: CityLatLon[]): Observable<CityLatLon> =>
             iif(
@@ -31,14 +26,15 @@ function App() {
         ),
         mergeMap((latlon: CityLatLon) =>
           forkJoin({
-            currentWeatherAPI: ajax.getJSON(
-              `https://api.openweathermap.org/data/2.5/weather?lat=${latlon.lat}&lon=${latlon.lon}&appid={API key}`,
-            ),
+            currentWeatherAPI: ajax.getJSON(getCurrentWeatherURL(latlon)),
+            oneCallAPI: ajax.getJSON(getOneCallURL(latlon)),
+            hourlyForecastAPI: ajax.getJSON(getThreeHourlyForcastURL(latlon)),
           }),
         ),
+        tap(console.log),
       )
       .subscribe();
-  });
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
