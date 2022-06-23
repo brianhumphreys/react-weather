@@ -15,7 +15,7 @@ import "toastify-js/src/toastify.css";
 
 function App() {
   const dispatch = useDispatch();
-  const [query, setQuery] = useState("houston");
+  const [query, setQuery] = useState("Heidenheim, Germany");
 
   const { oneCallAPI, currentWeatherAPI, hourlyForecastAPI } = useSelector(
     ({ weather }: ReduxState) => weather,
