@@ -12,6 +12,7 @@ export const getGeoEncoderURL = (city: string): string => {
 };
 
 export const getCurrentWeatherURL = (latlon: CityLatLon): string => {
+  console.log("getCurrentWeatherURL");
   return (
     CORS_PROXY +
     CURREN_WEATHER_API_URL +
@@ -20,6 +21,7 @@ export const getCurrentWeatherURL = (latlon: CityLatLon): string => {
 };
 
 export const getOneCallURL = (latlon: CityLatLon): string => {
+  console.log("getOneCallURL");
   return (
     CORS_PROXY +
     ONE_CALL_API_URL +
@@ -28,6 +30,7 @@ export const getOneCallURL = (latlon: CityLatLon): string => {
 };
 
 export const getThreeHourlyForcastURL = (latlon: CityLatLon): string => {
+  console.log("getThreeHourlyForcastURL");
   return (
     CORS_PROXY +
     THREE_HOURLY_FORECAST_API_URL +

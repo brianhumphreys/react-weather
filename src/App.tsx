@@ -1,40 +1,17 @@
-import React, { useEffect } from "react";
-import { forkJoin, iif, tap, mergeMap, Observable, of, throwError } from "rxjs";
-import { ajax } from "rxjs/ajax";
-import {
-  getCurrentWeatherURL,
-  getGeoEncoderURL,
-  getThreeHourlyForcastURL,
-  getOneCallURL,
-} from "./api/urls";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import "./App.css";
 import logo from "./logo.svg";
 
+import { initialFetch } from "./actions";
+
 function App() {
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    console.log("hellllllo");
-    ajax
-      .getJSON<CityLatLon[]>(getGeoEncoderURL("houston"))
-      .pipe(
-        mergeMap(
-          (body: CityLatLon[]): Observable<CityLatLon> =>
-            iif(
-              () => body.length > 0,
-              of(body[0]),
-              throwError(() => new Error("oops")),
-            ),
-        ),
-        mergeMap((latlon: CityLatLon) =>
-          forkJoin({
-            currentWeatherAPI: ajax.getJSON(getCurrentWeatherURL(latlon)),
-            oneCallAPI: ajax.getJSON(getOneCallURL(latlon)),
-            hourlyForecastAPI: ajax.getJSON(getThreeHourlyForcastURL(latlon)),
-          }),
-        ),
-        tap(console.log),
-      )
-      .subscribe();
+    dispatch(initialFetch());
   }, []);
+
   return (
     <div className="App">
       <header className="App-header">
