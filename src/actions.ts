@@ -10,7 +10,7 @@ export const initializeAction = (
   payload,
 });
 
-export const initialFetch = (): PayloadAction<null> => ({
+export const initialFetch = (payload: string): PayloadAction<string> => ({
   type: INITIALIZE,
-  payload: null,
+  payload,
 });

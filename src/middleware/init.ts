@@ -1,18 +1,8 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { ofType } from "redux-observable";
-import {
-  map,
-  of,
-  mergeMap,
-  Observable,
-  iif,
-  throwError,
-  forkJoin,
-  tap,
-} from "rxjs";
+import { forkJoin, iif, map, mergeMap, Observable, of, throwError } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { INITIALIZE, initializeAction } from "../actions";
-import { Epic } from "redux-observable";
 import {
   getCurrentWeatherURL,
   getGeoEncoderURL,
@@ -21,12 +11,12 @@ import {
 } from "../api/urls";
 
 export const fetchWeatherData = (
-  action$: Observable<PayloadAction<null>>,
+  action$: Observable<PayloadAction<string>>,
 ): Observable<PayloadAction<WeatherState>> =>
   action$.pipe(
     ofType(INITIALIZE),
-    mergeMap(() =>
-      ajax.getJSON<CityLatLon[]>(getGeoEncoderURL("houston")).pipe(
+    mergeMap(({ payload }: PayloadAction<string>) =>
+      ajax.getJSON<CityLatLon[]>(getGeoEncoderURL(payload)).pipe(
         mergeMap(
           (body: CityLatLon[]): Observable<CityLatLon> =>
             iif(
@@ -44,11 +34,9 @@ export const fetchWeatherData = (
             hourlyForecastAPI: ajax.getJSON<HourlyForecastAPI>(
               getThreeHourlyForcastURL(latlon),
             ),
-          }).pipe(tap(console.log)),
+          }),
         ),
         map((weatherState: WeatherState) => initializeAction(weatherState)),
-        // tap((result) => dispatch(init(result))),
       ),
     ),
-    // @ts-ignore
   );
