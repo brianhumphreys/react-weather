@@ -1,6 +1,16 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { ofType } from "redux-observable";
-import { forkJoin, iif, map, mergeMap, Observable, of, throwError } from "rxjs";
+import {
+  forkJoin,
+  iif,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  throwError,
+  tap,
+  catchError,
+} from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { INITIALIZE, initializeAction } from "../actions";
 import {
@@ -12,7 +22,7 @@ import {
 
 export const fetchWeatherData = (
   action$: Observable<PayloadAction<string>>,
-): Observable<PayloadAction<WeatherState>> =>
+): Observable<PayloadAction<WeatherData | string>> =>
   action$.pipe(
     ofType(INITIALIZE),
     mergeMap(({ payload }: PayloadAction<string>) =>
@@ -36,7 +46,10 @@ export const fetchWeatherData = (
             ),
           }),
         ),
-        map((weatherState: WeatherState) => initializeAction(weatherState)),
+        map((weatherState: WeatherData) => initializeAction(weatherState)),
+        catchError((error) =>
+          of({ type: "weather/setError", payload: "data not available" }),
+        ),
       ),
     ),
   );

@@ -121,7 +121,7 @@ interface HourlySummary extends CommonSummary {
 }
 
 interface DailySummary extends CommonSummary {
-  feels_like: number;
+  feels_like: FeelsLike;
   temp: Temp;
   sunrise: number;
   sunset: number;
@@ -204,8 +204,26 @@ interface HourlyForecastAPI {
   city: City;
 }
 
+interface XY {
+  x: number;
+  y: number;
+}
+
+interface CurrentChart {
+  range: string;
+  metric: string;
+}
+
+interface WeatherData {
+  currentWeatherAPI: CurrentWeatherAPI;
+  oneCallAPI: OneCallAPI;
+  hourlyForecastAPI: HourlyForecastAPI;
+}
+
 interface WeatherState {
   currentWeatherAPI: CurrentWeatherAPI;
   oneCallAPI: OneCallAPI;
   hourlyForecastAPI: HourlyForecastAPI;
+  currentChart: CurrentChart;
+  error: string | null;
 }

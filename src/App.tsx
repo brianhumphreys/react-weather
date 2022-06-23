@@ -4,12 +4,20 @@ import "./App.css";
 import logo from "./logo.svg";
 
 import { initialFetch } from "./actions";
+import { useChart } from "./hooks/useChart";
+import { Card } from "./components/card";
+import { Chart } from "./components/Chart";
+import { useWeather } from "./hooks/useWeather";
+import { setError } from "./store/weather";
+
+import Toastify from "toastify-js";
+import "toastify-js/src/toastify.css";
 
 function App() {
   const dispatch = useDispatch();
   const [query, setQuery] = useState("houston");
 
-  const { oneCallAPI, currentWeatherAPI } = useSelector(
+  const { oneCallAPI, currentWeatherAPI, hourlyForecastAPI } = useSelector(
     ({ weather }: ReduxState) => weather,
   );
 
@@ -56,6 +64,18 @@ function App() {
     return `${day} ${date} ${month} ${year}`;
   };
 
+  const { error } = useWeather();
+
+  useEffect(() => {
+    if (!!error) {
+      Toastify({
+        text: error,
+        duration: 5000,
+      }).showToast();
+      dispatch(setError(null));
+    }
+  }, [error]);
+
   return (
     <div
       className={
@@ -77,24 +97,61 @@ function App() {
             onKeyPress={search}
           />
         </div>
-        {typeof oneCallAPI !== "undefined" ? (
-          <div>
-            <div className="location-box">
-              <div className="location">
-                <p>{currentWeatherAPI.sys.country}</p>
-              </div>
-              <div className="date">{dateBuilder(new Date())}</div>
+        <Card />
+        <br />
+        <br />
+        <Chart />
+        {/* <button type="button" className="btn btn-primary" id="liveToastBtn">
+          Show live toast
+        </button> */}
+        <div
+          className="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          data-autohide="false"
+        >
+          <div className="toast-header">
+            {/* <img src="..." className="rounded mr-2" alt="..." /> */}
+            <strong className="mr-auto">Bootstrap</strong>
+            <small>11 mins ago</small>
+            <button
+              type="button"
+              className="ml-2 mb-1 close"
+              data-dismiss="toast"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="toast-body">
+            Hello, world! This is a toast message.
+          </div>
+        </div>
+        {/* <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <img src="..." className="rounded me-2" alt="..." />
+              <strong className="me-auto">Bootstrap</strong>
+              <small>11 mins ago</small>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
             </div>
-            <div className="weather-box">
-              <div className="temp">
-                {Math.round(oneCallAPI.current.temp)}°c
-              </div>
-              <div className="weather">{oneCallAPI.current.temp}</div>
+            <div className="toast-body">
+              Hello, world! This is a toast message.
             </div>
           </div>
-        ) : (
-          ""
-        )}
+        </div> */}
       </main>
     </div>
   );

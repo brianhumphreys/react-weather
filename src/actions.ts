@@ -4,8 +4,8 @@ export const INITIALIZE = "weather/init";
 export const SET_WEATHER = "weather/setWeather";
 
 export const initializeAction = (
-  payload: WeatherState,
-): PayloadAction<WeatherState> => ({
+  payload: WeatherData,
+): PayloadAction<WeatherData> => ({
   type: SET_WEATHER,
   payload,
 });
