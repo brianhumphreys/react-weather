@@ -16,7 +16,7 @@ export const getCurrentWeatherURL = (latlon: CityLatLon): string => {
   return (
     CORS_PROXY +
     CURREN_WEATHER_API_URL +
-    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}`
+    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}&units=imperial`
   );
 };
 
@@ -25,7 +25,7 @@ export const getOneCallURL = (latlon: CityLatLon): string => {
   return (
     CORS_PROXY +
     ONE_CALL_API_URL +
-    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}`
+    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}&units=imperial`
   );
 };
 
@@ -34,7 +34,7 @@ export const getThreeHourlyForcastURL = (latlon: CityLatLon): string => {
   return (
     CORS_PROXY +
     THREE_HOURLY_FORECAST_API_URL +
-    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}`
+    `?lat=${latlon.lat}&lon=${latlon.lon}&appid=${API_KEY}&units=imperial`
   );
 };
 
